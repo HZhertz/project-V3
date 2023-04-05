@@ -1,0 +1,16 @@
+INSERT INTO `router` (`id`, `parentId`, `level`, `path`, `name`, `component`, `icon`, `link`) VALUES (1, 0, 0, '/students', '学生信息', 'Home', 'fa fa-users', '/');
+INSERT INTO `router` (`id`, `parentId`, `level`, `path`, `name`, `component`, `icon`, `link`) VALUES (2, 1, 1, '/students/studentslist', '学生列表', 'StudentList', 'fa fa-list', 'students');
+INSERT INTO `router` (`id`, `parentId`, `level`, `path`, `name`, `component`, `icon`, `link`) VALUES (3, 1, 1, '/students/studentsedit', '学生管理', 'StudentEdit', 'fa fa-list', 'students');
+INSERT INTO `router` (`id`, `parentId`, `level`, `path`, `name`, `component`, `icon`, `link`) VALUES (4, 1, 1, '/students/infolist', '信息列表', 'InfoList', 'fa fa-list-alt', 'students');
+INSERT INTO `router` (`id`, `parentId`, `level`, `path`, `name`, `component`, `icon`, `link`) VALUES (5, 1, 1, '/students/infoedit', '信息管理', 'InfoEdit', 'fa fa-list-alt', 'students');
+INSERT INTO `router` (`id`, `parentId`, `level`, `path`, `name`, `component`, `icon`, `link`) VALUES (6, 1, 1, '/students/worklist', '作业列表', 'WorkList', 'fa fa-list-ul', 'students');
+INSERT INTO `router` (`id`, `parentId`, `level`, `path`, `name`, `component`, `icon`, `link`) VALUES (7, 1, 1, '/students/workedit', '作业管理', 'WorkEdit', 'fa fa-th-list', 'students');
+INSERT INTO `router` (`id`, `parentId`, `level`, `path`, `name`, `component`, `icon`, `link`) VALUES (8, 0, 0, '/data', '数据分析', 'Home', 'fa fa-bar-chart', '/');
+INSERT INTO `router` (`id`, `parentId`, `level`, `path`, `name`, `component`, `icon`, `link`) VALUES (9, 8, 1, '/data/dataviews', '数据概览', 'DataView', 'fa fa-line-chart', 'dataAnalysis');
+INSERT INTO `router` (`id`, `parentId`, `level`, `path`, `name`, `component`, `icon`, `link`) VALUES (10, 8, 1, '/data/mapviews', '地图概览', 'MapView', 'fa fa-line-chart', 'dataAnalysis');
+INSERT INTO `router` (`id`, `parentId`, `level`, `path`, `name`, `component`, `icon`, `link`) VALUES (11, 8, 1, '/data/travel', '旅游地图', 'TravelMap', 'fa fa-line-chart', 'dataAnalysis');
+INSERT INTO `router` (`id`, `parentId`, `level`, `path`, `name`, `component`, `icon`, `link`) VALUES (12, 0, 0, '/user', '个人信息', 'Home', 'fa fa-user', '/');
+INSERT INTO `router` (`id`, `parentId`, `level`, `path`, `name`, `component`, `icon`, `link`) VALUES (13, 12, 1, '/user/my', '个人中心', 'User', 'fa fa-user', 'user');
+INSERT INTO `router` (`id`, `parentId`, `level`, `path`, `name`, `component`, `icon`, `link`) VALUES (14, 0, 0, '/users', '用户信息', 'Home', 'fa fa-user', '/');
+INSERT INTO `router` (`id`, `parentId`, `level`, `path`, `name`, `component`, `icon`, `link`) VALUES (15, 14, 1, '/users/usersedit', '用户管理', 'UserEdit', 'fa fa-user', 'useredit');
+INSERT INTO `router` (`id`, `parentId`, `level`, `path`, `name`, `component`, `icon`, `link`) VALUES (16, 14, 1, '/users/usersstate', '权限管理', 'UserState', 'fa fa-user', 'useredit');
