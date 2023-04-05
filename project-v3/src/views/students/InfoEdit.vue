@@ -1,10 +1,20 @@
 <template>
   <div class="infoEdit">
-    <el-form :inline="true" class="demo-form-inline" size="small">
-      <el-form-item>
-        <el-button type="primary" @click="add">新增</el-button>
-      </el-form-item>
-    </el-form>
+    <div style="display: flex">
+      <Find
+        find="student"
+        :changeText="changeText"
+        :getData="getData"
+        @updateTableData="tableData = $event"
+        @updateTotal="total = $event"
+      ></Find>
+      <el-form :inline="true" class="demo-form-inline" size="small">
+        <el-form-item>
+          <el-button color="#626aef" @click="add">新增</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+
     <el-table :data="compData" border style="width: 100%">
       <el-table-column prop="name" label="姓名" align="center">
       </el-table-column>
@@ -122,6 +132,7 @@
 <script lang="ts" setup>
 import { getStu, info, delStu } from '@/request/api'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import Find from '@/components/common/Find.vue'
 
 const tdState = reactive<{
   tableData: Student[]
@@ -135,9 +146,10 @@ let pageSize = ref(10) //每页显示条数
 
 const infoState = reactive({
   form: {
+    id: 0,
     name: '',
     sex: 1,
-    age: '',
+    age: 0,
     father: '',
     mather: '',
     address: '',
@@ -162,14 +174,19 @@ let total = ref(0)
 //获取el-form组件对象
 let diaFormRef = ref()
 
+const changeText: (tableDataRef: Student[]) => void = (
+  tableDataRef: Student[]
+) => {
+  tableDataRef.forEach((item) => {
+    item.sex === 1 ? (item.sex_text = '男') : (item.sex_text = '女')
+  })
+}
 const getData = () => {
   getStu().then((res) => {
     if (res.data.status === 200) {
       tableData.value = res.data.data
       total.value = res.data.total
-      tableData.value.forEach((item) => {
-        item.sex === 1 ? (item.sex_text = '男') : (item.sex_text = '女')
-      })
+      changeText(tableData.value)
     }
   })
 }
@@ -177,9 +194,10 @@ getData()
 
 const add = () => {
   form.value = {
+    id: 0,
     name: '',
     sex: 1,
-    age: '',
+    age: 0,
     father: '',
     mather: '',
     address: '',
@@ -210,7 +228,18 @@ const del = (row: InfoRow) => {
   })
 }
 const edit = (row: InfoRow) => {
-  form.value = { ...row }
+  const newRow = (({
+    id,
+    name,
+    sex,
+    age,
+    father,
+    mather,
+    address,
+    time,
+    phone
+  }) => ({ id, name, sex, age, father, mather, address, time, phone }))(row)
+  form.value = { ...newRow }
   state.value = false
   dialogFormVisible.value = true
 }

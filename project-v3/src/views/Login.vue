@@ -84,8 +84,8 @@ const loginFn = () => {
       console.log('校验通过', ruleForm.value)
       login(ruleForm.value).then((res) => {
         if (res.data.status === 200) {
-          Cookies.set('username', res.data.username, { expires: 7 })
-          Cookies.set('token', res.data.token, { expires: 7 })
+          Cookies.set('username', res.data.username, { expires: 2 })
+          Cookies.set('token', res.data.token, { expires: 2 })
           ElMessage({ message: res.data.message, type: 'success' })
           // 获取用户权限信息
           store.dispatch('getUserStatus').then((res) => {

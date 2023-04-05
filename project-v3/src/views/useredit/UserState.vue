@@ -1,5 +1,12 @@
 <template>
   <div class="userEdit">
+    <Find
+      find="user"
+      :changeText="changeText"
+      :getData="getData"
+      @updateTableData="tableData = $event"
+      @updateTotal="total = $event"
+    ></Find>
     <el-table :data="compData" border style="width: 100%">
       <el-table-column prop="id" label="用户ID" align="center">
       </el-table-column>
@@ -15,8 +22,8 @@
       <el-table-column prop="email" label="用户邮箱" align="center">
       </el-table-column>
       <el-table-column
-        prop="privilege"
-        label="权限"
+        prop="ustatus_text"
+        label="用户角色"
         align="center"
         :width="200"
       >
@@ -64,8 +71,9 @@
 </template>
 
 <script lang="ts" setup>
-import { getUsers, updateState } from '@/request/api'
+import { getUsers, updatePvg } from '@/request/api'
 import { ElMessage } from 'element-plus'
+import Find from '@/components/common/Find.vue'
 
 const tdState = reactive<{
   tableData: UsersInfo[]
@@ -125,21 +133,33 @@ const defaultProps = {
   children: 'children'
 }
 
-const tree = ref()
+const changeText: (tableDataRef: UsersInfo[]) => void = (
+  tableDataRef: UsersInfo[]
+) => {
+  tableDataRef.forEach((item) => {
+    item.ustatus === 0
+      ? (item.ustatus_text = '超级管理员')
+      : item.ustatus === 1
+      ? (item.ustatus_text = '普通用户')
+      : item.ustatus === 2
+      ? (item.ustatus_text = '学生管理员')
+      : (item.ustatus_text = '用户管理员')
+    item.privilege_arr = item.privilege.split(',').map(Number)
+  })
+}
 const getData = () => {
   getUsers().then((res) => {
     if (res.data.status === 200) {
       tableData.value = res.data.data
       total.value = res.data.total
-      tableData.value.forEach((item) => {
-        item.privilege_arr = item.privilege.split(',').map(Number)
-      })
+      changeText(tableData.value)
     }
   })
 }
 
 getData()
 
+const tree = ref()
 const edit = (row: UsersInfo) => {
   let filteredArr = row.privilege_arr.filter(
     (num) => ![1, 8, 12, 14].includes(num)
@@ -175,7 +195,7 @@ const submit = () => {
     privilege: addMissingNumbers(newState).join()
   }
 
-  updateState(data).then((res) => {
+  updatePvg(data).then((res) => {
     if (res.data.status === 200) {
       getData()
       dialogFormVisible.value = false

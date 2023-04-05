@@ -29,7 +29,7 @@ interface InfoRow {
   id: number
   name: string
   sex: number
-  age: string
+  age: number
   father: string
   mather: string
   address: string
@@ -44,7 +44,13 @@ interface StudentWork {
   workstate_C: number
   workstate_C_text?: string
   workstate_Java: number
-  workstate_Java_text: string
+  workstate_Java_text?: string
   workstate_Python: number
-  workstate_Python_text: string
+  workstate_Python_text?: string
+}
+interface WorkRow {
+  id: number
+  workstate_C: number
+  workstate_Java: number
+  workstate_Python: number
 }

@@ -1,11 +1,32 @@
 <template>
   <div class="userEdit">
+    <Find
+      find="user"
+      :changeText="changeText"
+      :getData="getData"
+      @updateTableData="tableData = $event"
+      @updateTotal="total = $event"
+    ></Find>
     <el-table :data="compData" border style="width: 100%">
       <el-table-column prop="id" label="用户ID" align="center">
       </el-table-column>
       <el-table-column label="用户头像" align="center">
         <template v-slot="scope">
-          <el-avatar shape="square" :size="50" :src="scope.row.user_pic" />
+          <el-upload
+            class="avatar-uploader"
+            action="http://127.0.0.1:3007/api/users/avatar"
+            :data="scope.row"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <el-avatar
+              shape="square"
+              :size="100"
+              :src="scope.row.user_pic"
+              class="avatar"
+            />
+          </el-upload>
         </template>
       </el-table-column>
       <el-table-column prop="username" label="用户名" align="center">
@@ -15,8 +36,8 @@
       <el-table-column prop="email" label="用户邮箱" align="center">
       </el-table-column>
       <el-table-column
-        prop="privilege"
-        label="权限"
+        prop="ustatus_text"
+        label="用户角色"
         align="center"
         :width="200"
       >
@@ -55,21 +76,7 @@
           :label-width="formLabelWidth"
           prop="user_pic"
         >
-          <el-upload
-            class="avatar-uploader"
-            action="http://127.0.0.1:3007/api/userspic"
-            :data="form"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
-          >
-            <el-avatar
-              shape="square"
-              :size="150"
-              :src="userImg"
-              class="avatar"
-            />
-          </el-upload>
+          <el-avatar shape="square" :size="100" :src="form.user_pic" />
         </el-form-item>
         <el-form-item label="用户ID" :label-width="formLabelWidth" prop="id"
           >{{ form.id }}
@@ -79,17 +86,35 @@
           :label-width="formLabelWidth"
           prop="username"
         >
-          <el-input v-model="form.username" autocomplete="off"></el-input>
+          {{ form.username }}
         </el-form-item>
         <el-form-item
-          label="昵称"
+          label="用户昵称"
           :label-width="formLabelWidth"
           prop="nickname"
         >
           <el-input v-model="form.nickname" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱" :label-width="formLabelWidth" prop="email">
+        <el-form-item
+          label="用户邮箱"
+          :label-width="formLabelWidth"
+          prop="email"
+        >
           <el-input v-model="form.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="角色分配"
+          :label-width="formLabelWidth"
+          prop="ustatus"
+        >
+          <el-select v-model="form.ustatus" :placeholder="ustatus">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -105,9 +130,10 @@ import { delUser, getUsers, updateUser } from '@/request/api'
 import { emailRule, nameRule } from '@/utils/validate'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { UploadProps } from 'element-plus'
+import Find from '@/components/common/Find.vue'
 
 const tdState = reactive<{
-  tableData: UserInfo[]
+  tableData: UsersInfo[]
 }>({
   tableData: []
 })
@@ -119,7 +145,8 @@ const infoState = reactive({
     id: 0,
     username: '',
     nickname: '',
-    email: ''
+    email: '',
+    ustatus: 1
   }
 })
 let { form } = toRefs(infoState)
@@ -150,17 +177,48 @@ const formLabelWidth = '80px'
 //获取el-form组件对象
 let userFormRef = ref()
 
+const options = [
+  {
+    value: 0,
+    label: '超级管理员'
+  },
+  {
+    value: 1,
+    label: '普通用户'
+  },
+  {
+    value: 2,
+    label: '学生管理员'
+  },
+  {
+    value: 3,
+    label: '用户管理员'
+  }
+]
+let ustatus = ref('')
 let currentPage = ref(1) //当前页数
 let pageSize = ref(10) //每页显示条数
 let total = ref(0)
 
-const userImg = ref()
-
+const changeText: (tableDataRef: UsersInfo[]) => void = (
+  tableDataRef: UsersInfo[]
+) => {
+  tableDataRef.forEach((item) => {
+    item.ustatus === 0
+      ? (item.ustatus_text = '超级管理员')
+      : item.ustatus === 1
+      ? (item.ustatus_text = '普通用户')
+      : item.ustatus === 2
+      ? (item.ustatus_text = '学生管理员')
+      : (item.ustatus_text = '用户管理员')
+  })
+}
 const getData = () => {
   getUsers().then((res) => {
     if (res.data.status === 200) {
       tableData.value = res.data.data
       total.value = res.data.total
+      changeText(tableData.value)
     }
   })
 }
@@ -173,8 +231,8 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
 ) => {
   console.log(response)
   if (response.status === 200) {
-    userImg.value = 'http://127.0.0.1:3007/uploads/' + response.srcurl
-    form.value.user_pic = 'http://127.0.0.1:3007/uploads/' + response.srcurl
+    location.reload()
+    // console.log(response)
     ElMessage({ type: 'success', message: response.message })
   }
 }
@@ -192,7 +250,7 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
   return true
 }
 
-const del = (row: UserInfo) => {
+const del = (row: UsersInfo) => {
   ElMessageBox.confirm('你确定要删除吗？', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: 'Cancel',
@@ -213,8 +271,23 @@ const del = (row: UserInfo) => {
   })
 }
 const edit = (row: UsersInfo) => {
-  form.value = { ...row }
-  userImg.value = form.value.user_pic
+  const newRow = (({
+    id,
+    username,
+    nickname,
+    email,
+    user_pic,
+    ustatus,
+    privilege
+  }) => ({ id, username, nickname, email, user_pic, ustatus, privilege }))(row)
+  form.value = { ...newRow }
+  form.value.ustatus === 0
+    ? (ustatus.value = '超级管理员')
+    : form.value.ustatus === 1
+    ? (ustatus.value = '普通用户')
+    : form.value.ustatus === 2
+    ? (ustatus.value = '学生管理员')
+    : (ustatus.value = '用户管理员')
   dialogFormVisible.value = true
 }
 const close = () => {

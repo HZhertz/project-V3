@@ -1,5 +1,12 @@
 <template>
   <div class="infoList">
+    <Find
+      find="student"
+      :changeText="changeText"
+      :getData="getData"
+      @updateTableData="tableData = $event"
+      @updateTotal="total = $event"
+    ></Find>
     <el-table :data="compData" border style="width: 100%">
       <el-table-column prop="name" label="姓名" align="center">
       </el-table-column>
@@ -17,7 +24,6 @@
       </el-table-column>
       <el-table-column prop="phone" label="联系方式" align="center">
       </el-table-column>
-      
     </el-table>
     <el-pagination
       v-model:current-page="currentPage"
@@ -34,6 +40,7 @@
 
 <script lang="ts" setup>
 import { getStu } from '@/request/api'
+import Find from '@/components/common/Find.vue'
 
 const tdState = reactive<{
   tableData: Student[]
@@ -46,14 +53,19 @@ let currentPage = ref(1) //当前页数
 let pageSize = ref(10) //每页显示条数
 let total = ref(0)
 
+const changeText: (tableDataRef: Student[]) => void = (
+  tableDataRef: Student[]
+) => {
+  tableDataRef.forEach((item) => {
+    item.sex === 1 ? (item.sex_text = '男') : (item.sex_text = '女')
+  })
+}
 const getData = () => {
   getStu().then((res) => {
     if (res.data.status === 200) {
       tableData.value = res.data.data
       total.value = res.data.total
-      tableData.value.forEach((item) => {
-        item.sex === 1 ? (item.sex_text = '男') : (item.sex_text = '女')
-      })
+      changeText(tableData.value)
     }
   })
 }

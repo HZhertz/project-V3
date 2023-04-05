@@ -75,24 +75,27 @@ const formInline = reactive({
   name: ''
 })
 
+const changeText = (tableDataRef: Student[]) => {
+  tableDataRef.forEach((item) => {
+    item.sex === 1 ? (item.sex_text = '男') : (item.sex_text = '女')
+    item.class === 1
+      ? (item.class_text = 'C++')
+      : item.class === 2
+      ? (item.class_text = 'Java')
+      : (item.class_text = 'Python')
+    item.state === 1
+      ? (item.state_text = '已入学')
+      : item.state === 0
+      ? (item.state_text = '未入学')
+      : (item.state_text = '休学中')
+  })
+}
 const getData = () => {
   getStu().then((res) => {
     if (res.data.status === 200) {
       tableData.value = res.data.data
       total.value = res.data.total
-      tableData.value.forEach((item) => {
-        item.sex === 1 ? (item.sex_text = '男') : (item.sex_text = '女')
-        item.class === 1
-          ? (item.class_text = 'C++')
-          : item.class === 2
-          ? (item.class_text = 'Java')
-          : (item.class_text = 'Python')
-        item.state === 1
-          ? (item.state_text = '已入学')
-          : item.state === 0
-          ? (item.state_text = '未入学')
-          : (item.state_text = '休学中')
-      })
+      changeText(tableData.value)
     }
   })
 }
@@ -122,19 +125,7 @@ const find = () => {
     if (res.data.status === 200) {
       tableData.value = res.data.data
       total.value = res.data.total
-      tableData.value.forEach((item) => {
-        item.sex === 1 ? (item.sex_text = '男') : (item.sex_text = '女')
-        item.class === 1
-          ? (item.class_text = 'C++')
-          : item.class === 2
-          ? (item.class_text = 'Java')
-          : (item.class_text = 'Python')
-        item.state === 1
-          ? (item.state_text = '已入学')
-          : item.state === 0
-          ? (item.state_text = '未入学')
-          : (item.state_text = '休学中')
-      })
+      changeText(tableData.value)
     }
   })
 }

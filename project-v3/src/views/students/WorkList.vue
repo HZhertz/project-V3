@@ -1,5 +1,25 @@
 <template>
   <div class="workList">
+    <!-- 查询重置 -->
+    <el-form
+      :inline="true"
+      :model="formInline"
+      class="demo-form-inline"
+      size="small"
+    >
+      <el-form-item label="姓名">
+        <el-input
+          v-model="formInline.name"
+          placeholder="请输入姓名查询"
+        ></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="find">查询</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="reset">重置</el-button>
+      </el-form-item>
+    </el-form>
     <el-table :data="tableData" v-loading="loading" border style="width: 100%">
       <el-table-column prop="id" label="学号" align="center"> </el-table-column>
       <el-table-column prop="name" label="姓名" align="center">
@@ -39,7 +59,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getWorks } from '@/request/api'
+import { findStu, getWorks } from '@/request/api'
 
 const tdState = reactive<{
   tableData: StudentWork[]
@@ -54,33 +74,53 @@ const state = reactive({
   loading: true
 })
 let { total, page, size, loading } = toRefs(state)
+const formInline = reactive({
+  name: ''
+})
 
+const changeText = (tableDataRef: StudentWork[]) => {
+  tableDataRef.forEach((item) => {
+    item.class === 1
+      ? (item.class_text = 'C++')
+      : item.class === 2
+      ? (item.class_text = 'Java')
+      : (item.class_text = 'Python')
+    item.workstate_C === 1
+      ? (item.workstate_C_text = '已完成')
+      : (item.workstate_C_text = '未完成')
+    item.workstate_Java === 1
+      ? (item.workstate_Java_text = '已完成')
+      : (item.workstate_Java_text = '未完成')
+    item.workstate_Python === 1
+      ? (item.workstate_Python_text = '已完成')
+      : (item.workstate_Python_text = '未完成')
+  })
+  loading.value = false
+}
 const getData = (page: number, size: number) => {
   getWorks(page, size).then((res) => {
     if (res.data.status === 200) {
       tableData.value = res.data.data
       total.value = res.data.total
-      tableData.value.forEach((item) => {
-        item.class === 1
-          ? (item.class_text = 'C++')
-          : item.class === 2
-          ? (item.class_text = 'Java')
-          : (item.class_text = 'Python')
-        item.workstate_C === 1
-          ? (item.workstate_C_text = '已完成')
-          : (item.workstate_C_text = '未完成')
-        item.workstate_Java === 1
-          ? (item.workstate_Java_text = '已完成')
-          : (item.workstate_Java_text = '未完成')
-        item.workstate_Python === 1
-          ? (item.workstate_Python_text = '已完成')
-          : (item.workstate_Python_text = '未完成')
-      })
-      loading.value = false
+      changeText(tableData.value)
     }
   })
 }
 getData(page.value, size.value)
+
+const find = () => {
+  findStu(formInline.name).then((res) => {
+    if (res.data.status === 200) {
+      tableData.value = res.data.data
+      total.value = res.data.total
+      changeText(tableData.value)
+    }
+  })
+}
+const reset = () => {
+  formInline.name = ''
+  getData(page.value, size.value)
+}
 
 const handleSizeChange = (val: number) => {
   size.value = val

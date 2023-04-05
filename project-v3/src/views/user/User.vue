@@ -8,7 +8,7 @@
       <div style="margin: 0 30px">
         <el-upload
           class="avatar-uploader"
-          action="http://127.0.0.1:3007/my/avatar"
+          action="http://127.0.0.1:3007/api/my/avatar"
           :headers="headerObj"
           :data="form"
           :show-file-list="false"
@@ -133,7 +133,8 @@ const pwdRules = reactive({
 const getData = () => {
   getMy().then((res) => {
     if (res.data.status === 200) {
-      form.value = res.data.data
+      const { user_pic, nickname, username, id, email } = res.data.data
+      form.value = { user_pic, nickname, username, id, email }
     }
   })
 }
@@ -176,6 +177,7 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
 ) => {
   if (response.status === 200) {
     location.reload()
+    // console.log(response)
     ElMessage({ type: 'success', message: response.message })
   }
 }

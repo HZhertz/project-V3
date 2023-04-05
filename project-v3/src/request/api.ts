@@ -19,7 +19,7 @@ export function regUser(data: LoginData | string): Promise<LoginRes> {
   data = qs.stringify(data)
   return request({
     method: 'post',
-    url: '/api/reguser',
+    url: '/api/register',
     data
   })
 }
@@ -27,28 +27,28 @@ export function regUser(data: LoginData | string): Promise<LoginRes> {
 export function getStu(): Promise<StudentsRes> {
   return request({
     method: 'get',
-    url: '/api/students'
+    url: '/api/student/infos'
   })
 }
 // 学生列表查询接口
 export function findStu(name: string): Promise<StudentsRes> {
   return request({
     method: 'get',
-    url: `/api/student?name=${name}`
+    url: `/api/student/info?name=${name}`
   })
 }
 // 学生列表删除接口
 export function delStu(id: number) {
   return request({
     method: 'delete',
-    url: `/api/student?id=${id}`
+    url: `/api/student/info?id=${id}`
   })
 }
 
 //信息列表新增和修改接口
 export function info(type: string, data: any): Promise<StudentsRes> {
   data = qs.stringify(data)
-  let obj = { method: type, url: '/api/student', data }
+  let obj = { method: type, url: '/api/student/info', data }
   return request(obj)
 }
 
@@ -57,7 +57,7 @@ export function info(type: string, data: any): Promise<StudentsRes> {
 //   data = qs.stringify(data)
 //   return request({
 //     method: 'post',
-//     url: '/api/student',
+//     url: '/api/student/info',
 //     data
 //   })
 // }
@@ -66,7 +66,7 @@ export function info(type: string, data: any): Promise<StudentsRes> {
 //   data = qs.stringify(data)
 //   return request({
 //     method: 'put',
-//     url: '/api/student',
+//     url: '/api/student/info',
 //     data
 //   })
 // }
@@ -75,7 +75,7 @@ export function info(type: string, data: any): Promise<StudentsRes> {
 export function getWorks(page: number, size: number) {
   return request({
     method: 'get',
-    url: `/api/works?page=${page}&size=${size}`
+    url: `/api/student/works?page=${page}&size=${size}`
   })
 }
 //作业列表修改接口
@@ -83,7 +83,7 @@ export function updateWorks(data: any) {
   data = qs.stringify(data)
   return request({
     method: 'put',
-    url: '/api/works',
+    url: '/api/student/work',
     data
   })
 }
@@ -92,14 +92,14 @@ export function updateWorks(data: any) {
 export function dataView(): Promise<DataViewRes> {
   return request({
     method: 'get',
-    url: '/api/view'
+    url: '/api/view/stack'
   })
 }
 //旅游地图接口
 export function travel() {
   return request({
     method: 'get',
-    url: '/api/travel'
+    url: '/api/view/geo'
   })
 }
 
@@ -107,14 +107,14 @@ export function travel() {
 export function getStatus() {
   return request({
     method: 'get',
-    url: '/my/status'
+    url: '/api/my/router'
   })
 }
 //个人信息获取接口
 export function getMy() {
   return request({
     method: 'get',
-    url: '/my/info'
+    url: '/api/my/info'
   })
 }
 //个人信息修改接口
@@ -122,7 +122,7 @@ export function updateMy(data: any) {
   data = qs.stringify(data)
   return request({
     method: 'post',
-    url: '/my/info',
+    url: '/api/my/info',
     data
   })
 }
@@ -131,7 +131,7 @@ export function updateMypwd(data: any) {
   data = qs.stringify(data)
   return request({
     method: 'post',
-    url: '/my/pwd',
+    url: '/api/my/pwd',
     data
   })
 }
@@ -140,32 +140,38 @@ export function updateMypwd(data: any) {
 export function getUsers() {
   return request({
     method: 'get',
-    url: '/api/usersinfo'
-  })
-}
-
-//修改用户信息接口
-export function updateUser(data: any) {
-  data = qs.stringify(data)
-  return request({
-    method: 'put',
-    url: '/api/usersinfo',
-    data
-  })
-}
-//用户权限更新接口
-export function updateState(data: any) {
-  data = qs.stringify(data)
-  return request({
-    method: 'put',
-    url: '/api/userstatus',
-    data
+    url: '/api/users/infos'
   })
 }
 //用户信息删除接口
 export function delUser(id: number) {
   return request({
     method: 'delete',
-    url: `/api/usersinfo?id=${id}`
+    url: `/api/users/info?id=${id}`
+  })
+}
+//修改用户信息接口
+export function updateUser(data: any) {
+  data = qs.stringify(data)
+  return request({
+    method: 'put',
+    url: '/api/users/info',
+    data
+  })
+}
+//用户信息查找接口
+export function findUser(username: string) {
+  return request({
+    method: 'get',
+    url: `/api/users/info?username=${username}`
+  })
+}
+//用户权限更新接口
+export function updatePvg(data: any) {
+  data = qs.stringify(data)
+  return request({
+    method: 'put',
+    url: '/api/users/pvg',
+    data
   })
 }
