@@ -1,7 +1,10 @@
 import Cookies from 'js-cookie'
 import { App } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
-import store from '@/store'
+import pinia from '../store/store'
+import { useRouteStore } from '@/store/menus'
+
+const Route = useRouteStore(pinia)
 
 const routes: RouterT[] = [
   {
@@ -22,7 +25,7 @@ const router = createRouter({
 })
 
 const getRouteTree = () => {
-  const menus = store.getters.getNewMenus
+  const menus = Route.getNewMenus
   // 循环菜单对象
   for (let key in menus) {
     const newRoute: RouterT = {
@@ -69,9 +72,9 @@ const getRouteTree = () => {
 router.beforeEach((to, from, next) => {
   // token存在 && vuex里的menus(权限列表)为空
   const token = Cookies.get('token')
-  if (token && store.state.menus.length === 0) {
+  if (token && Route.$state.menus.length === 0) {
     // console.log('menus为空')
-    store.dispatch('getUserStatus').then(() => {
+    Route.getUserStatus().then(() => {
       getRouteTree()
       next(to.path)
     })
@@ -79,7 +82,7 @@ router.beforeEach((to, from, next) => {
   // 限定条件第一次登录
   else if (
     token &&
-    store.state.menus.length !== 0 &&
+    Route.$state.menus.length !== 0 &&
     from.path === '/login' &&
     to.path === '/home'
   ) {

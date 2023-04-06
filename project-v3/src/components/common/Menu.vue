@@ -29,10 +29,10 @@
 </template>
 
 <script lang="ts" setup>
-import { useStore } from 'vuex'
+import { useRouteStore } from '@/store/menus.js'
 
-const store = useStore()
-const newMenus: NewMenus = store.getters.getNewMenus
+const Route = useRouteStore()
+const newMenus: NewMenus = Route.getNewMenus
 </script>
 
 <style lang="less" scoped>

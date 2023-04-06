@@ -1,15 +1,17 @@
-import { createStore } from 'vuex'
-import { App } from 'vue'
+import { defineStore } from 'pinia'
+import { Names } from './store-name'
+
 import { getStatus } from '@/request/api'
 
-const store = createStore<State>({
-  state() {
+export const useRouteStore = defineStore(Names.ROUTE, {
+  state: () => {
     return {
       menus: []
     }
   },
+  // computed 修饰一些值
   getters: {
-    getNewMenus(state) {
+    getNewMenus(state: any) {
       const newMenus: NewMenus = {}
       //获取旧的菜单
       const menus = state.menus
@@ -31,18 +33,17 @@ const store = createStore<State>({
       return newMenus
     }
   },
-  mutations: {
-    updateMenus(state, menus) {
-      state.menus = menus
-    }
-  },
+  // methods 同步/异步 提交state
   actions: {
-    getUserStatus({ commit }) {
+    updateMenus(menus: MenuObj[]) {
+      this.menus = menus
+    },
+    getUserStatus() {
       return new Promise((resolve, reject) => {
         // console.log('运行至此');
         getStatus().then((res) => {
           if (res.data.status === 200) {
-            commit('updateMenus', res.data.data)
+            this.updateMenus(res.data.data)
             resolve(res.data)
           } else {
             reject(res)
@@ -50,12 +51,5 @@ const store = createStore<State>({
         })
       })
     }
-  },
-  modules: {}
+  }
 })
-
-export const initStore = (app: App<Element>) => {
-  app.use(store)
-}
-
-export default store

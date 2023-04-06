@@ -55,7 +55,7 @@ import { login, getStatus, regUser } from '@/request/api'
 import Cookies from 'js-cookie'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
+import {useRouteStore} from '@/store/menus.js'
 
 const state = reactive({
   ruleForm: {
@@ -75,20 +75,19 @@ let ruleFormRef = ref()
 // 获取项目路由对象
 let router = useRouter()
 
-let store = useStore()
+const Route = useRouteStore()
 
 const loginFn = () => {
   ruleFormRef.value
     .validate()
     .then(() => {
-      console.log('校验通过', ruleForm.value)
       login(ruleForm.value).then((res) => {
         if (res.data.status === 200) {
           Cookies.set('username', res.data.username, { expires: 2 })
           Cookies.set('token', res.data.token, { expires: 2 })
           ElMessage({ message: res.data.message, type: 'success' })
           // 获取用户权限信息
-          store.dispatch('getUserStatus').then((res) => {
+          Route.getUserStatus().then(() => {
             router.push('/home')
           })
         }
