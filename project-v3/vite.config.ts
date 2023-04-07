@@ -12,26 +12,24 @@ export default defineConfig({
       eslintrc: {
         enabled: false, // Default `false`
         filepath: './.eslintrc-auto-import.json',
-        globalsPropValue: true,
+        globalsPropValue: true
       },
-      dts: "types/auto-import.d.ts"
+      dts: 'types/auto-import.d.ts'
     })
   ],
   resolve: {
     alias: {
-      "@": path.join(__dirname, 'src'),
-      "#": path.join(__dirname, 'types')
+      '@': path.join(__dirname, 'src'),
+      '#': path.join(__dirname, 'types')
     }
   },
   server: {
-    // host: '127.0.0.1',
-    // port: 3000,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:3007/',	//实际请求地址
-        changeOrigin: true,//开启代理跨域
-        rewrite: (path) => path.replace(/^\/api/, '')//重写路径
-      },
+        target: 'http://127.0.0.1:3007/api/', //实际请求地址
+        changeOrigin: true, //开启代理跨域
+        rewrite: (path) => path.replace(/^\/api/, '') //重写路径
+      }
     }
   }
 })

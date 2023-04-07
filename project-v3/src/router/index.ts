@@ -43,10 +43,7 @@ const getRouteTree = () => {
         path: menus[key].children[i].path,
         name: menus[key].children[i].name,
         iconClass: menus[key].children[i].icon,
-        component: () =>
-          import(
-            /* @vite-ignore */ '../views/' + link + '/' + component + '.vue'
-          )
+        component: () => import(`@/views/${link}/${component}.vue`)
       })
     }
     // 动态添加路由规则
@@ -70,7 +67,7 @@ const getRouteTree = () => {
 
 //路由前置导航守卫
 router.beforeEach((to, from, next) => {
-  // token存在 && vuex里的menus(权限列表)为空
+  // token存在 && 权限列表为空
   const token = Cookies.get('token')
   if (token && Route.$state.menus.length === 0) {
     // console.log('menus为空')

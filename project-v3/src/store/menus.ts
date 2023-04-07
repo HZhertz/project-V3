@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { Names } from './store-name'
-
 import { getStatus } from '@/request/api'
+import Cookies from 'js-cookie'
 
 export const useRouteStore = defineStore(Names.ROUTE, {
   state: () => {
@@ -45,6 +45,9 @@ export const useRouteStore = defineStore(Names.ROUTE, {
           if (res.data.status === 200) {
             this.updateMenus(res.data.data)
             resolve(res.data)
+          } else if (res.data.status === 405) {
+            Cookies.remove('token')
+            location.reload()
           } else {
             reject(res)
           }
