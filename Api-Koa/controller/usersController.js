@@ -37,7 +37,7 @@ class UsersController {
       }
     }
   }
-  // 修改用户信息(角色分配))
+  // 修改用户信息
   async updateUserInfo(ctx) {
     let userInfo = ctx.request.body
     if (userInfo.id === '100001') {

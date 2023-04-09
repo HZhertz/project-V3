@@ -106,7 +106,7 @@ class StudentController {
     if (rows.affectedRows !== 1) {
       ctx.body = { type: 'error', message: '修改作业信息失败！' }
     } else {
-      const data = await Student.findWork(workInfo.id)
+      const data = await Student.findWork_id(workInfo.id)
       ctx.body = {
         type: 'success',
         status: 200,

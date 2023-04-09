@@ -3,7 +3,9 @@ import query from '../sql/query.js'
 class UsersModel {
   // 获取用户信息
   async getInfo() {
-    return await query('SELECT * FROM users')
+    return await query(
+      'SELECT id,username,nickname,email,user_pic,ustatus,privilege FROM users'
+    )
   }
   // 删除用户信息
   async delInfo(userid) {
@@ -28,11 +30,17 @@ class UsersModel {
   }
   // 查找用户信息(name)
   async findInfo(username) {
-    return await query('SELECT * FROM users WHERE username = ?', [username])
+    return await query(
+      'SELECT id ,username ,nickname ,email ,user_pic ,ustatus ,privilege FROM users WHERE username = ?',
+      [username]
+    )
   }
   // 查找用户信息(ID)
   async findInfo_id(userid) {
-    return await query('SELECT * FROM users WHERE id = ?', [userid])
+    return await query(
+      'SELECT id ,username ,nickname ,email ,user_pic ,ustatus ,privilege FROM users WHERE id = ?',
+      [userid]
+    )
   }
 }
 export default new UsersModel()

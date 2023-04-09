@@ -52,7 +52,7 @@ router.put(
 router.get(
   '/work',
   validateSchemaJoi('get', find_work_schema),
-  StudentController.findStuInfo
+  StudentController.findStuWork
 )
 
 export default router

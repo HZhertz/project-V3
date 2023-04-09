@@ -65,7 +65,8 @@ class MyController {
   async updateMyPwd(ctx) {
     let myid = ctx.state.user.id
     let myinfo = ctx.request.body
-    const rows = await My.getInfo(myid)
+    const rows = await My.getPwd(myid)
+    console.log(rows)
     if (rows.length !== 1) {
       ctx.body = { type: 'error', message: '用户不存在！' }
     } else {
